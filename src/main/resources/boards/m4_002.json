@@ -1,0 +1,128 @@
+{
+  "puzzleId" : "m4_002",
+  "size" : 4,
+  "difficulty" : "MEDIUM",
+  "grid" : [ [ 0, 1, 0, 0 ], [ 0, 3, 0, 0 ], [ 1, 0, 0, 3 ], [ 4, 0, 0, 0 ] ],
+  "constraints" : [ {
+    "from" : {
+      "row" : 3,
+      "col" : 2
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 3
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 1
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 1
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 1
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 1
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 3
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 1,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 1
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 2
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 2
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 4
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 2
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 2
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 1
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 1
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 2
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 1,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 3
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 3
+    }
+  } ],
+  "solution" : [ [ 3, 1, 4, 2 ], [ 2, 3, 1, 4 ], [ 1, 4, 2, 3 ], [ 4, 2, 3, 1 ] ]
+}

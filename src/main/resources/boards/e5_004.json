@@ -1,0 +1,208 @@
+{
+  "puzzleId" : "e5_004",
+  "size" : 5,
+  "difficulty" : "EASY",
+  "grid" : [ [ 3, 5, 0, 2, 4 ], [ 0, 4, 0, 0, 0 ], [ 0, 1, 2, 0, 0 ], [ 0, 0, 5, 1, 2 ], [ 0, 0, 4, 3, 0 ] ],
+  "constraints" : [ {
+    "from" : {
+      "row" : 1,
+      "col" : 4
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 1
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 5,
+      "col" : 1
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 4
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 5,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 1
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 2
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 2
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 5
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 2
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 5,
+      "col" : 2
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 3
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 1,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 2
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 1,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 1
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 1
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 3
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 4
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 3
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 1
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 2
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 3
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 3
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 5,
+      "col" : 2
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 5,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 3
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 3
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 5
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 5
+    }
+  } ],
+  "solution" : [ [ 3, 5, 1, 2, 4 ], [ 2, 4, 3, 5, 1 ], [ 5, 1, 2, 4, 3 ], [ 4, 3, 5, 1, 2 ], [ 1, 2, 4, 3, 5 ] ]
+}

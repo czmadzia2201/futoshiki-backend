@@ -1,0 +1,278 @@
+{
+  "puzzleId" : "m9_014",
+  "size" : 9,
+  "difficulty" : "MEDIUM",
+  "grid" : [ [ 0, 0, 0, 0, 9, 2, 0, 0, 0 ], [ 0, 5, 3, 7, 0, 0, 0, 0, 0 ], [ 9, 2, 8, 0, 0, 0, 0, 1, 0 ], [ 0, 0, 0, 0, 7, 0, 2, 0, 4 ], [ 0, 0, 0, 0, 3, 0, 9, 2, 0 ], [ 6, 0, 0, 8, 0, 0, 0, 7, 0 ], [ 0, 1, 2, 0, 6, 0, 4, 0, 0 ], [ 0, 4, 7, 0, 0, 3, 0, 0, 0 ], [ 0, 0, 0, 2, 0, 0, 0, 4, 0 ] ],
+  "constraints" : [ {
+    "from" : {
+      "row" : 1,
+      "col" : 6
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 1,
+      "col" : 7
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 7
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 7
+    }
+  }, {
+    "from" : {
+      "row" : 7,
+      "col" : 4
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 7,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 8,
+      "col" : 1
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 9,
+      "col" : 1
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 1
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 1
+    }
+  }, {
+    "from" : {
+      "row" : 9,
+      "col" : 4
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 9,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 6,
+      "col" : 8
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 7,
+      "col" : 8
+    }
+  }, {
+    "from" : {
+      "row" : 6,
+      "col" : 3
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 7,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 8
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 5,
+      "col" : 8
+    }
+  }, {
+    "from" : {
+      "row" : 6,
+      "col" : 3
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 6,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 8
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 9
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 5
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 6
+    }
+  }, {
+    "from" : {
+      "row" : 8,
+      "col" : 8
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 8,
+      "col" : 9
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 8
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 8
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 8
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 1,
+      "col" : 9
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 3
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 5,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 7,
+      "col" : 4
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 8,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 5,
+      "col" : 7
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 5,
+      "col" : 8
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 4
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 1,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 2
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 5,
+      "col" : 2
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 7
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 8
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 6
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 6
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 2
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 2
+    }
+  }, {
+    "from" : {
+      "row" : 8,
+      "col" : 5
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 9,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 9
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 9
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 9
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 9
+    }
+  }, {
+    "from" : {
+      "row" : 7,
+      "col" : 2
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 8,
+      "col" : 2
+    }
+  } ],
+  "solution" : [ [ 1, 6, 5, 4, 9, 2, 8, 3, 7 ], [ 2, 5, 3, 7, 4, 8, 1, 6, 9 ], [ 9, 2, 8, 3, 5, 4, 7, 1, 6 ], [ 8, 3, 6, 9, 7, 1, 2, 5, 4 ], [ 4, 8, 1, 6, 3, 7, 9, 2, 5 ], [ 6, 9, 4, 8, 2, 5, 3, 7, 1 ], [ 7, 1, 2, 5, 6, 9, 4, 8, 3 ], [ 5, 4, 7, 1, 8, 3, 6, 9, 2 ], [ 3, 7, 9, 2, 1, 6, 5, 4, 8 ] ]
+}

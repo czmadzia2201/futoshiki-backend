@@ -1,0 +1,218 @@
+{
+  "puzzleId" : "m7_011",
+  "size" : 7,
+  "difficulty" : "MEDIUM",
+  "grid" : [ [ 0, 3, 0, 1, 0, 0, 6 ], [ 6, 2, 0, 0, 0, 0, 0 ], [ 0, 0, 0, 0, 3, 0, 5 ], [ 0, 6, 2, 5, 0, 0, 4 ], [ 0, 0, 0, 0, 0, 6, 0 ], [ 0, 0, 0, 3, 0, 0, 0 ], [ 0, 7, 0, 0, 4, 0, 2 ] ],
+  "constraints" : [ {
+    "from" : {
+      "row" : 2,
+      "col" : 4
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 3
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 7
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 5,
+      "col" : 7
+    }
+  }, {
+    "from" : {
+      "row" : 7,
+      "col" : 4
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 7,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 7
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 7
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 2
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 7
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 7
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 1
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 5,
+      "col" : 1
+    }
+  }, {
+    "from" : {
+      "row" : 7,
+      "col" : 2
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 7,
+      "col" : 3
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 4
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 4
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 4
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 1,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 1
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 1
+    }
+  }, {
+    "from" : {
+      "row" : 2,
+      "col" : 5
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 2,
+      "col" : 6
+    }
+  }, {
+    "from" : {
+      "row" : 4,
+      "col" : 4
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 1,
+      "col" : 1
+    },
+    "operator" : "GREATER_THAN",
+    "to" : {
+      "row" : 1,
+      "col" : 2
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 6
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 3,
+      "col" : 7
+    }
+  }, {
+    "from" : {
+      "row" : 6,
+      "col" : 6
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 7,
+      "col" : 6
+    }
+  }, {
+    "from" : {
+      "row" : 7,
+      "col" : 3
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 7,
+      "col" : 4
+    }
+  }, {
+    "from" : {
+      "row" : 3,
+      "col" : 5
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 4,
+      "col" : 5
+    }
+  }, {
+    "from" : {
+      "row" : 7,
+      "col" : 1
+    },
+    "operator" : "LESS_THAN",
+    "to" : {
+      "row" : 7,
+      "col" : 2
+    }
+  } ],
+  "solution" : [ [ 4, 3, 7, 1, 5, 2, 6 ], [ 6, 2, 5, 4, 1, 7, 3 ], [ 7, 1, 6, 2, 3, 4, 5 ], [ 1, 6, 2, 5, 7, 3, 4 ], [ 5, 4, 3, 7, 2, 6, 1 ], [ 2, 5, 4, 3, 6, 1, 7 ], [ 3, 7, 1, 6, 4, 5, 2 ] ]
+}
