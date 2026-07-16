@@ -31,6 +31,10 @@ public class ActiveGameStore {
         return game;
     }
 
+    void save(ActiveGame activeGame) {
+        games.put(activeGame.gameId(), activeGame);
+    }
+
     private void cleanup() {
         Instant cutoff = Instant.now().minus(Duration.ofDays(1));
         games.entrySet().removeIf(entry ->

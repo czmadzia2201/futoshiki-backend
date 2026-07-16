@@ -1,5 +1,8 @@
 package org.games.futoshiki.controller;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.games.futoshiki.dto.ActiveGameDto;
 import org.games.futoshiki.dto.CheckSolutionRequest;
@@ -22,7 +25,7 @@ public class FutoshikiController {
 
     @PostMapping("/new-game/{size}/{difficulty}")
     public ActiveGameDto newGame(
-            @PathVariable int size,
+            @PathVariable @Min(4) @Max(9) int size,
             @PathVariable Difficulty difficulty,
             @RequestParam(defaultValue = "generator") ProviderStrategy strategy
     ) {
@@ -32,7 +35,7 @@ public class FutoshikiController {
     @PostMapping("/{id}/check-solution")
     public CheckSolutionResponse checkSolution(
             @PathVariable UUID id,
-            @RequestBody CheckSolutionRequest request) {
+            @Valid @RequestBody CheckSolutionRequest request) {
         boolean isCorrect = futoshikiService.checkSolution(id, request.solution());
         return new CheckSolutionResponse(isCorrect);
     }

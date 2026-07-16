@@ -2,7 +2,6 @@ package org.games.futoshiki.dto;
 
 import org.games.futoshiki.model.ActiveGame;
 
-import java.time.Instant;
 import java.util.UUID;
 
 public record ActiveGameDto(UUID gameId, FutoshikiBoardDto board) {

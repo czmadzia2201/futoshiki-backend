@@ -11,8 +11,6 @@ public class FutoshikiBoardGenerator {
     private final Random random = new Random();
 
     public FutoshikiBoard generate(int size, Difficulty difficulty) {
-        validateSize(size);
-
         int[][] solution = generateSolution(size);
         List<Constraint> constraints = generateConstraints(solution, difficulty);
         int[][] grid = createPuzzleGrid(solution, constraints, difficulty);
@@ -25,12 +23,6 @@ public class FutoshikiBoardGenerator {
                 constraints,
                 solution
         );
-    }
-
-    private void validateSize(int size) {
-        if (size < 4 || size > 9) {
-            throw new IllegalArgumentException("Futoshiki size must be between 4 and 9");
-        }
     }
 
     private int[][] generateSolution(int size) {

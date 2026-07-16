@@ -1,4 +1,5 @@
 package org.games.futoshiki.dto;
 
-public record CheckSolutionRequest(int[][] solution) {
-}
+import jakarta.validation.constraints.NotNull;
+
+public record CheckSolutionRequest(@NotNull int[][] solution) {}

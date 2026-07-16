@@ -35,7 +35,9 @@ public class FutoshikiSolver {
         Position empty = findBestEmptyPosition();
 
         if (empty == null) {
-            solutionCount++;
+            if (isValidCompletedGrid()) {
+                solutionCount++;
+            }
             return;
         }
 
@@ -46,6 +48,66 @@ public class FutoshikiSolver {
                 setValue(empty, 0);
             }
         }
+    }
+
+    private boolean isValidCompletedGrid() {
+        return hasValidRows()
+                && hasValidColumns()
+                && satisfiesAllConstraints();
+    }
+
+    private boolean hasValidRows() {
+        for (int row = 1; row <= size; row++) {
+            boolean[] used = new boolean[size + 1];
+
+            for (int col = 1; col <= size; col++) {
+                int value = valueAt(row, col);
+
+                if (value < 1 || value > size || used[value]) {
+                    return false;
+                }
+
+                used[value] = true;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean hasValidColumns() {
+        for (int col = 1; col <= size; col++) {
+            boolean[] used = new boolean[size + 1];
+
+            for (int row = 1; row <= size; row++) {
+                int value = valueAt(row, col);
+
+                if (value < 1 || value > size || used[value]) {
+                    return false;
+                }
+
+                used[value] = true;
+            }
+        }
+
+        return true;
+    }
+
+    private boolean satisfiesAllConstraints() {
+        for (Constraint constraint : constraints) {
+            int fromValue = valueAt(constraint.from());
+            int toValue = valueAt(constraint.to());
+
+            boolean satisfied = switch (constraint.operator()) {
+                case LESS_THAN -> fromValue < toValue;
+                case GREATER_THAN -> fromValue > toValue;
+            };
+
+            if (!satisfied) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private Position findBestEmptyPosition() {

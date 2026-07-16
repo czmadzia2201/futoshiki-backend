@@ -8,7 +8,7 @@ public enum Difficulty {
     MEDIUM('m'),
     HARD('h');
 
-    private char symbol;
+    private final char symbol;
 
     Difficulty(char symbol) {
         this.symbol = symbol;

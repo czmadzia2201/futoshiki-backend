@@ -3,6 +3,7 @@ package org.games.futoshiki.provider;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.games.futoshiki.exception.BoardLoadingException;
 import org.games.futoshiki.model.Difficulty;
 import org.games.futoshiki.model.FutoshikiBoard;
 import org.springframework.stereotype.Component;
@@ -43,7 +44,7 @@ public class JsonFutoshikiBoardProvider implements FutoshikiBoardProvider {
                 log.warn("Failed to load puzzle file on attempt {}.", attempt, e);
             }
         }
-        throw new IllegalStateException("Unable to load puzzle after " + MAX_ATTEMPTS + " attempts.");
+        throw new BoardLoadingException("Unable to load puzzle after " + MAX_ATTEMPTS + " attempts.");
     }
 
     private int providePuzzleNumber(String mapKey) {
@@ -69,6 +70,13 @@ public class JsonFutoshikiBoardProvider implements FutoshikiBoardProvider {
             puzzleIds.remove();
         }
         puzzleIds.add(drawnNo);
+    }
+
+    protected Queue<Integer> getPuzzleIds(String mapKey) {
+        if (!puzzleIdsMap.containsKey(mapKey)) {
+            return null;
+        }
+        return new LinkedList<>(puzzleIdsMap.get(mapKey));
     }
 
 }
