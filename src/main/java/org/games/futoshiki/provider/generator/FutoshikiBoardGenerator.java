@@ -14,6 +14,7 @@ public class FutoshikiBoardGenerator {
         int[][] solution = generateSolution(size);
         List<Constraint> constraints = generateConstraints(solution, difficulty);
         int[][] grid = createPuzzleGrid(solution, constraints, difficulty);
+        constraints = removeRedundantConstraints(grid, constraints);
 
         return new FutoshikiBoard(
                 null,
@@ -162,6 +163,21 @@ public class FutoshikiBoardGenerator {
         }
 
         return grid;
+    }
+
+    private List<Constraint> removeRedundantConstraints(
+            int[][] grid,
+            List<Constraint> constraints) {
+
+        return constraints.stream()
+                .filter(constraint -> {
+                    Position from = constraint.from();
+                    Position to = constraint.to();
+
+                    return grid[from.row() - 1][from.col() - 1] == 0
+                            || grid[to.row() - 1][to.col() - 1] == 0;
+                })
+                .toList();
     }
 
     private List<Position> allPositions(int size) {
