@@ -14,7 +14,8 @@ public class FutoshikiBoardGenerator {
         int[][] solution = generateSolution(size);
         List<Constraint> constraints = generateConstraints(solution, difficulty);
         int[][] grid = createPuzzleGrid(solution, constraints, difficulty);
-        constraints = removeRedundantConstraints(grid, constraints);
+        constraints = removeConstraintsBetweenGivenCells(grid, constraints);
+        constraints = removeRedundantConstraintsForHiddenCells(grid, constraints);
 
         return new FutoshikiBoard(
                 null,
@@ -165,20 +166,85 @@ public class FutoshikiBoardGenerator {
         return grid;
     }
 
-    private List<Constraint> removeRedundantConstraints(
+    private List<Constraint> removeConstraintsBetweenGivenCells(
             int[][] grid,
             List<Constraint> constraints) {
 
         return constraints.stream()
-                .filter(constraint -> {
-                    Position from = constraint.from();
-                    Position to = constraint.to();
+                .filter(constraint -> isHidden(grid, constraint.from())
+                        || isHidden(grid, constraint.to()))
+                .toList();
+    }
 
-                    return grid[from.row() - 1][from.col() - 1] == 0
-                            || grid[to.row() - 1][to.col() - 1] == 0;
+    private List<Constraint> removeRedundantConstraintsForHiddenCells(
+            int[][] grid,
+            List<Constraint> constraints) {
+
+        Map<HiddenConstraintKey, ConstraintCandidate> strongestConstraints = new HashMap<>();
+
+        for (Constraint constraint : constraints) {
+            boolean fromHidden = isHidden(grid, constraint.from());
+            boolean toHidden = isHidden(grid, constraint.to());
+
+            if (fromHidden == toHidden) {
+                continue;
+            }
+
+            Position hiddenPosition = fromHidden ? constraint.from() : constraint.to();
+            Position givenPosition = fromHidden ? constraint.to() : constraint.from();
+            ConstraintOperator effectiveOperator = fromHidden
+                    ? constraint.operator()
+                    : reverse(constraint.operator());
+            int givenValue = valueAt(grid, givenPosition.row(), givenPosition.col());
+
+            HiddenConstraintKey key = new HiddenConstraintKey(hiddenPosition, effectiveOperator);
+            ConstraintCandidate candidate = new ConstraintCandidate(constraint, effectiveOperator, givenValue);
+
+            strongestConstraints.merge(key, candidate, this::strongerConstraint);
+        }
+
+        Set<Constraint> constraintsToKeep = Collections.newSetFromMap(new IdentityHashMap<>());
+        strongestConstraints.values().stream()
+                .map(ConstraintCandidate::constraint)
+                .forEach(constraintsToKeep::add);
+
+        return constraints.stream()
+                .filter(constraint -> {
+                    boolean fromHidden = isHidden(grid, constraint.from());
+                    boolean toHidden = isHidden(grid, constraint.to());
+
+                    return fromHidden == toHidden || constraintsToKeep.contains(constraint);
                 })
                 .toList();
     }
+
+    private ConstraintCandidate strongerConstraint(
+            ConstraintCandidate first,
+            ConstraintCandidate second) {
+
+        return switch (first.effectiveOperator()) {
+            case LESS_THAN -> first.givenValue() <= second.givenValue() ? first : second;
+            case GREATER_THAN -> first.givenValue() >= second.givenValue() ? first : second;
+        };
+    }
+
+    private ConstraintOperator reverse(ConstraintOperator operator) {
+        return switch (operator) {
+            case LESS_THAN -> ConstraintOperator.GREATER_THAN;
+            case GREATER_THAN -> ConstraintOperator.LESS_THAN;
+        };
+    }
+
+    private boolean isHidden(int[][] grid, Position position) {
+        return valueAt(grid, position.row(), position.col()) == 0;
+    }
+
+    private record HiddenConstraintKey(Position hiddenPosition, ConstraintOperator operator) {}
+
+    private record ConstraintCandidate(
+            Constraint constraint,
+            ConstraintOperator effectiveOperator,
+            int givenValue) {}
 
     private List<Position> allPositions(int size) {
         List<Position> positions = new ArrayList<>();
