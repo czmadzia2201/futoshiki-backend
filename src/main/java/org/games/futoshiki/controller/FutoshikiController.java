@@ -5,8 +5,8 @@ import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.games.futoshiki.dto.ActiveGameDto;
-import org.games.futoshiki.dto.CheckSolutionRequest;
-import org.games.futoshiki.dto.CheckSolutionResponse;
+import org.games.futoshiki.dto.SolutionDto;
+import org.games.futoshiki.dto.SolutionValidationDto;
 import org.games.futoshiki.model.Difficulty;
 import org.games.futoshiki.provider.ProviderStrategy;
 import org.games.futoshiki.service.FutoshikiService;
@@ -33,10 +33,15 @@ public class FutoshikiController {
     }
 
     @PostMapping("/{id}/check-solution")
-    public CheckSolutionResponse checkSolution(
+    public SolutionValidationDto checkSolution(
             @PathVariable UUID id,
-            @Valid @RequestBody CheckSolutionRequest request) {
+            @Valid @RequestBody SolutionDto request) {
         boolean isCorrect = futoshikiService.checkSolution(id, request.solution());
-        return new CheckSolutionResponse(isCorrect);
+        return new SolutionValidationDto(isCorrect);
+    }
+
+    @GetMapping("/{id}/show-solution")
+    public SolutionDto showSolution(@PathVariable UUID id) {
+        return futoshikiService.showSolution(id);
     }
 }

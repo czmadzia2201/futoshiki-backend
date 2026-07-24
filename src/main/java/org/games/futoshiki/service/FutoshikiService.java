@@ -2,6 +2,7 @@ package org.games.futoshiki.service;
 
 import lombok.RequiredArgsConstructor;
 import org.games.futoshiki.dto.ActiveGameDto;
+import org.games.futoshiki.dto.SolutionDto;
 import org.games.futoshiki.exception.InvalidSolutionException;
 import org.games.futoshiki.model.ActiveGame;
 import org.games.futoshiki.model.Difficulty;
@@ -37,6 +38,11 @@ public class FutoshikiService {
         validateSolution(activeGame.board().size(), solution);
         int[][] expectedSolution = activeGame.board().solution();
         return Arrays.deepEquals(solution, expectedSolution);
+    }
+
+    public SolutionDto showSolution(UUID gameId) {
+        ActiveGame activeGame = activeGameStore.get(gameId);
+        return new SolutionDto(activeGame.board().solution());
     }
 
     private void validateSize(int size) {

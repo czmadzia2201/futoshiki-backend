@@ -2,7 +2,7 @@ package org.games.futoshiki.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.games.futoshiki.dto.ActiveGameDto;
-import org.games.futoshiki.dto.CheckSolutionRequest;
+import org.games.futoshiki.dto.SolutionDto;
 import org.games.futoshiki.dto.FutoshikiBoardDto;
 import org.games.futoshiki.exception.BoardLoadingException;
 import org.games.futoshiki.exception.GameNotFoundException;
@@ -27,6 +27,7 @@ import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(FutoshikiController.class)
@@ -106,7 +107,7 @@ class FutoshikiControllerTest {
     @Test
     void checkSolution_shouldReturnSuccessResponse() throws Exception {
         int[][] solution = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        CheckSolutionRequest request = new CheckSolutionRequest(solution);
+        SolutionDto request = new SolutionDto(solution);
         UUID gameId = UUID.randomUUID();
         when(futoshikiService.checkSolution(
                 eq(gameId), argThat(actual -> Arrays.deepEquals(actual, solution)))).thenReturn(true);
@@ -121,7 +122,7 @@ class FutoshikiControllerTest {
     @Test
     void checkSolution_shouldReturnBadRequest_incorrectRequestSize() throws Exception {
         int[][] solution = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        CheckSolutionRequest request = new CheckSolutionRequest(solution);
+        SolutionDto request = new SolutionDto(solution);
         UUID gameId = UUID.randomUUID();
         when(futoshikiService.checkSolution(eq(gameId), argThat(actual -> Arrays.deepEquals(actual, solution))))
                 .thenThrow(new InvalidSolutionException("Invalid solution size"));
@@ -135,7 +136,7 @@ class FutoshikiControllerTest {
     @Test
     void checkSolution_shouldReturnNotFound_gameNotFound() throws Exception {
         int[][] solution = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
-        CheckSolutionRequest request = new CheckSolutionRequest(solution);
+        SolutionDto request = new SolutionDto(solution);
         UUID gameId = UUID.randomUUID();
         when(futoshikiService.checkSolution(eq(gameId), argThat(actual -> Arrays.deepEquals(actual, solution))))
                 .thenThrow(new GameNotFoundException(gameId));
@@ -168,7 +169,7 @@ class FutoshikiControllerTest {
 
     @Test
     void checkSolution_shouldReturnBadRequest_nullSolution() throws Exception {
-        CheckSolutionRequest request = new CheckSolutionRequest(null);
+        SolutionDto request = new SolutionDto(null);
 
         mockMvc.perform(post("/futoshiki/{id}/check-solution", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
@@ -176,6 +177,18 @@ class FutoshikiControllerTest {
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(futoshikiService);
+    }
+
+    @Test
+    void showSolution_shouldReturnSolution() throws Exception {
+        int[][] solution = new int[][]{{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+        SolutionDto response = new SolutionDto(solution);
+        UUID gameId = UUID.randomUUID();
+        when(futoshikiService.showSolution(gameId)).thenReturn(response);
+
+        mockMvc.perform(get("/futoshiki/{id}/show-solution", gameId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.solution").isNotEmpty());
     }
 
 }

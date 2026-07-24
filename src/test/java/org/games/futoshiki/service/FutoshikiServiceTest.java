@@ -2,7 +2,7 @@ package org.games.futoshiki.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.games.futoshiki.dto.ActiveGameDto;
-import org.games.futoshiki.dto.CheckSolutionRequest;
+import org.games.futoshiki.dto.SolutionDto;
 import org.games.futoshiki.dto.FutoshikiBoardDto;
 import org.games.futoshiki.exception.InvalidSolutionException;
 import org.games.futoshiki.model.ActiveGame;
@@ -108,12 +108,12 @@ class FutoshikiServiceTest {
         FutoshikiBoard board = TestUtils.loadBoardFromJson(objectMapper, "test-board-h4_001.json");
         ActiveGame activeGame = activeGameStore.createNewGame(board);
 
-        CheckSolutionRequest correctSolution =
+        SolutionDto correctSolution =
                 TestUtils.loadSolutionFromJson(objectMapper,"solution-correct-h4_001.json");
         boolean isCorrect1 = futoshikiService.checkSolution(activeGame.gameId(), correctSolution.solution());
         assertTrue(isCorrect1);
 
-        CheckSolutionRequest incorrectSolution =
+        SolutionDto incorrectSolution =
                 TestUtils.loadSolutionFromJson(objectMapper,"solution-incorrect-h4_001.json");
         boolean isCorrect2 = futoshikiService.checkSolution(activeGame.gameId(), incorrectSolution.solution());
         assertFalse(isCorrect2);
@@ -124,7 +124,7 @@ class FutoshikiServiceTest {
         FutoshikiBoard board = TestUtils.loadBoardFromJson(objectMapper, "test-board-h4_001.json");
         ActiveGame activeGame = activeGameStore.createNewGame(board);
 
-        CheckSolutionRequest correctSolution
+        SolutionDto correctSolution
                 = TestUtils.loadSolutionFromJson(objectMapper, "solution-outofrange-h4_001.json");
         assertThatThrownBy(() -> futoshikiService.checkSolution(activeGame.gameId(), correctSolution.solution()))
                 .isInstanceOf(InvalidSolutionException.class)
@@ -136,7 +136,7 @@ class FutoshikiServiceTest {
         FutoshikiBoard board = TestUtils.loadBoardFromJson(objectMapper, "test-board-h4_001.json");
         ActiveGame activeGame = activeGameStore.createNewGame(board);
 
-        CheckSolutionRequest correctSolution =
+        SolutionDto correctSolution =
                 TestUtils.loadSolutionFromJson(objectMapper, "solution-nullelement-h4_001.json");
         assertThatThrownBy(() -> futoshikiService.checkSolution(activeGame.gameId(), correctSolution.solution()))
                 .isInstanceOf(InvalidSolutionException.class)
@@ -148,11 +148,23 @@ class FutoshikiServiceTest {
         FutoshikiBoard board = TestUtils.loadBoardFromJson(objectMapper, "test-board-h4_001.json");
         ActiveGame activeGame = activeGameStore.createNewGame(board);
 
-        CheckSolutionRequest correctSolution =
+        SolutionDto correctSolution =
                 TestUtils.loadSolutionFromJson(objectMapper, "solution-wrongsize-h4_001.json");
         assertThatThrownBy(() -> futoshikiService.checkSolution(activeGame.gameId(), correctSolution.solution()))
                 .isInstanceOf(InvalidSolutionException.class)
                 .hasMessage("Solution must have size: 4 x 4");
+    }
+
+    @Test
+    void shouldShowSolution() throws Exception {
+        FutoshikiBoard board = TestUtils.loadBoardFromJson(objectMapper, "test-board-h4_001.json");
+        ActiveGame activeGame = activeGameStore.createNewGame(board);
+
+        SolutionDto expectedSolution =
+                TestUtils.loadSolutionFromJson(objectMapper,"solution-correct-h4_001.json");
+
+        SolutionDto actualSolution =  futoshikiService.showSolution(activeGame.gameId());
+        assertThat(actualSolution.solution()).isDeepEqualTo(expectedSolution.solution());
     }
 
 }
