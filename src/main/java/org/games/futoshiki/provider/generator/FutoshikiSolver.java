@@ -4,24 +4,49 @@ import org.games.futoshiki.model.Constraint;
 import org.games.futoshiki.model.Position;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
+/**
+ * Backtracking Futoshiki solver used mainly by the board generator to verify
+ * uniqueness. Its public API is intentionally unchanged.
+ */
 public class FutoshikiSolver {
 
     private final int size;
     private final int[][] grid;
     private final List<Constraint> constraints;
 
+    private final boolean[][] rowUsed;
+    private final boolean[][] columnUsed;
+    private final List<Constraint>[][] constraintsByCell;
+    private final int[][] minimumValue;
+    private final int[][] maximumValue;
+
+    private boolean validInitialState = true;
     private int solutionCount;
 
+    @SuppressWarnings("unchecked")
     public FutoshikiSolver(int size, int[][] grid, List<Constraint> constraints) {
         this.size = size;
         this.grid = copy(grid);
-        this.constraints = constraints;
+        this.constraints = List.copyOf(constraints);
+        this.rowUsed = new boolean[size][size + 1];
+        this.columnUsed = new boolean[size][size + 1];
+        this.constraintsByCell = (List<Constraint>[][]) new List<?>[size][size];
+        this.minimumValue = new int[size][size];
+        this.maximumValue = new int[size][size];
+
+        initializeConstraintIndex();
+        initializeStaticBounds();
+        initializeUsedValues();
+        validateGivenConstraints();
     }
 
     public int countSolutionsUpTo(int limit) {
+        if (limit <= 0 || !validInitialState) {
+            return 0;
+        }
+
         solutionCount = 0;
         solve(limit);
         return solutionCount;
@@ -32,109 +57,72 @@ public class FutoshikiSolver {
             return;
         }
 
-        Position empty = findBestEmptyPosition();
+        CellChoice choice = findBestEmptyCell();
 
-        if (empty == null) {
-            if (isValidCompletedGrid()) {
-                solutionCount++;
-            }
+        if (choice == null) {
+            solutionCount++;
             return;
         }
 
-        for (int candidate = 1; candidate <= size; candidate++) {
-            if (canPlace(empty, candidate)) {
-                setValue(empty, candidate);
-                solve(limit);
-                setValue(empty, 0);
+        if (choice.candidateCount() == 0) {
+            return;
+        }
+
+        int row = choice.row();
+        int col = choice.col();
+
+        for (int value = minimumValue[row][col]; value <= maximumValue[row][col]; value++) {
+            if (!canPlace(row, col, value)) {
+                continue;
+            }
+
+            place(row, col, value);
+            solve(limit);
+            remove(row, col, value);
+
+            if (solutionCount >= limit) {
+                return;
             }
         }
     }
 
-    private boolean isValidCompletedGrid() {
-        return hasValidRows()
-                && hasValidColumns()
-                && satisfiesAllConstraints();
-    }
+    /**
+     * Minimum Remaining Values heuristic. No temporary Position/list objects
+     * are created while scanning the board.
+     */
+    private CellChoice findBestEmptyCell() {
+        CellChoice best = null;
 
-    private boolean hasValidRows() {
-        for (int row = 1; row <= size; row++) {
-            boolean[] used = new boolean[size + 1];
-
-            for (int col = 1; col <= size; col++) {
-                int value = valueAt(row, col);
-
-                if (value < 1 || value > size || used[value]) {
-                    return false;
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if (grid[row][col] != 0) {
+                    continue;
                 }
 
-                used[value] = true;
-            }
-        }
+                int candidateCount = countCandidates(row, col);
 
-        return true;
-    }
-
-    private boolean hasValidColumns() {
-        for (int col = 1; col <= size; col++) {
-            boolean[] used = new boolean[size + 1];
-
-            for (int row = 1; row <= size; row++) {
-                int value = valueAt(row, col);
-
-                if (value < 1 || value > size || used[value]) {
-                    return false;
+                if (candidateCount == 0) {
+                    return new CellChoice(row, col, 0);
                 }
 
-                used[value] = true;
-            }
-        }
+                if (best == null || candidateCount < best.candidateCount()) {
+                    best = new CellChoice(row, col, candidateCount);
 
-        return true;
-    }
-
-    private boolean satisfiesAllConstraints() {
-        for (Constraint constraint : constraints) {
-            int fromValue = valueAt(constraint.from());
-            int toValue = valueAt(constraint.to());
-
-            boolean satisfied = switch (constraint.operator()) {
-                case LESS_THAN -> fromValue < toValue;
-                case GREATER_THAN -> fromValue > toValue;
-            };
-
-            if (!satisfied) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private Position findBestEmptyPosition() {
-        List<PositionWithCandidateCount> emptyPositions = new ArrayList<>();
-
-        for (int row = 1; row <= size; row++) {
-            for (int col = 1; col <= size; col++) {
-                Position position = new Position(row, col);
-
-                if (valueAt(position) == 0) {
-                    int candidateCount = countCandidates(position);
-                    emptyPositions.add(new PositionWithCandidateCount(position, candidateCount));
+                    if (candidateCount == 1) {
+                        return best;
+                    }
                 }
             }
         }
 
-        return emptyPositions.stream()
-                .min(Comparator.comparingInt(PositionWithCandidateCount::candidateCount))
-                .map(PositionWithCandidateCount::position)
-                .orElse(null);
+        return best;
     }
 
-    private int countCandidates(Position position) {
+    private int countCandidates(int row, int col) {
         int count = 0;
 
-        for (int value = 1; value <= size; value++) {
-            if (canPlace(position, value)) {
+        for (int value = minimumValue[row][col]; value <= maximumValue[row][col]; value++) {
+            if (canPlace(row, col, value)) {
                 count++;
             }
         }
@@ -142,17 +130,17 @@ public class FutoshikiSolver {
         return count;
     }
 
-    private boolean canPlace(Position position, int value) {
-        return isUniqueInRow(position, value)
-                && isUniqueInColumn(position, value)
-                && satisfiesConstraints(position, value);
-    }
+    private boolean canPlace(int row, int col, int value) {
+        if (value < minimumValue[row][col] || value > maximumValue[row][col]) {
+            return false;
+        }
 
-    private boolean isUniqueInRow(Position position, int value) {
-        int row = position.row();
+        if (rowUsed[row][value] || columnUsed[col][value]) {
+            return false;
+        }
 
-        for (int col = 1; col <= size; col++) {
-            if (col != position.col() && valueAt(row, col) == value) {
+        for (Constraint constraint : constraintsByCell[row][col]) {
+            if (!satisfiesConstraintWithForwardCheck(constraint, row, col, value)) {
                 return false;
             }
         }
@@ -160,73 +148,209 @@ public class FutoshikiSolver {
         return true;
     }
 
-    private boolean isUniqueInColumn(Position position, int value) {
-        int col = position.col();
+    private boolean satisfiesConstraintWithForwardCheck(
+            Constraint constraint,
+            int changedRow,
+            int changedCol,
+            int changedValue) {
 
-        for (int row = 1; row <= size; row++) {
-            if (row != position.row() && valueAt(row, col) == value) {
-                return false;
+        int fromRow = constraint.from().row() - 1;
+        int fromCol = constraint.from().col() - 1;
+        int toRow = constraint.to().row() - 1;
+        int toCol = constraint.to().col() - 1;
+
+        boolean changedIsFrom = fromRow == changedRow && fromCol == changedCol;
+        int otherRow = changedIsFrom ? toRow : fromRow;
+        int otherCol = changedIsFrom ? toCol : fromCol;
+        int otherValue = grid[otherRow][otherCol];
+
+        if (otherValue != 0) {
+            return changedIsFrom
+                    ? compare(changedValue, otherValue, constraint)
+                    : compare(otherValue, changedValue, constraint);
+        }
+
+        // Forward checking: the still-empty neighbour must retain at least one
+        // row/column-valid value satisfying this inequality.
+        for (int candidate = minimumValue[otherRow][otherCol];
+             candidate <= maximumValue[otherRow][otherCol];
+             candidate++) {
+
+            if (rowUsed[otherRow][candidate] || columnUsed[otherCol][candidate]) {
+                continue;
+            }
+
+            boolean relationSatisfied = changedIsFrom
+                    ? compare(changedValue, candidate, constraint)
+                    : compare(candidate, changedValue, constraint);
+
+            if (relationSatisfied) {
+                return true;
             }
         }
 
-        return true;
+        return false;
     }
 
-    private boolean satisfiesConstraints(Position position, int value) {
-        for (Constraint constraint : constraints) {
-            if (!satisfiesConstraint(constraint, position, value)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    private boolean satisfiesConstraint(Constraint constraint, Position changedPosition, int changedValue) {
-        Integer fromValue = resolveValue(constraint.from(), changedPosition, changedValue);
-        Integer toValue = resolveValue(constraint.to(), changedPosition, changedValue);
-
-        if (fromValue == null || toValue == null) {
-            return true;
-        }
-
+    private boolean compare(int fromValue, int toValue, Constraint constraint) {
         return switch (constraint.operator()) {
             case LESS_THAN -> fromValue < toValue;
             case GREATER_THAN -> fromValue > toValue;
         };
     }
 
-    private Integer resolveValue(Position position, Position changedPosition, int changedValue) {
-        if (position.equals(changedPosition)) {
-            return changedValue;
+    private void place(int row, int col, int value) {
+        grid[row][col] = value;
+        rowUsed[row][value] = true;
+        columnUsed[col][value] = true;
+    }
+
+    private void remove(int row, int col, int value) {
+        grid[row][col] = 0;
+        rowUsed[row][value] = false;
+        columnUsed[col][value] = false;
+    }
+
+    private void initializeConstraintIndex() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                constraintsByCell[row][col] = new ArrayList<>(4);
+            }
         }
 
-        int value = valueAt(position);
+        for (Constraint constraint : constraints) {
+            int fromRow = constraint.from().row() - 1;
+            int fromCol = constraint.from().col() - 1;
+            int toRow = constraint.to().row() - 1;
+            int toCol = constraint.to().col() - 1;
 
-        return value == 0 ? null : value;
+            constraintsByCell[fromRow][fromCol].add(constraint);
+            constraintsByCell[toRow][toCol].add(constraint);
+        }
+    }
+
+    /**
+     * Propagates static lower/upper bounds through inequality chains.
+     * Example for size 5: a < b < c implies a <= 3, b in [2,4], c >= 3.
+     */
+    private void initializeStaticBounds() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                minimumValue[row][col] = 1;
+                maximumValue[row][col] = size;
+            }
+        }
+
+        boolean changed;
+        int maxIterations = size * size;
+
+        do {
+            changed = false;
+
+            for (Constraint constraint : constraints) {
+                Cell smaller = smallerCell(constraint);
+                Cell larger = largerCell(constraint);
+
+                int newLargerMinimum = Math.max(
+                        minimumValue[larger.row()][larger.col()],
+                        minimumValue[smaller.row()][smaller.col()] + 1);
+
+                int newSmallerMaximum = Math.min(
+                        maximumValue[smaller.row()][smaller.col()],
+                        maximumValue[larger.row()][larger.col()] - 1);
+
+                if (newLargerMinimum != minimumValue[larger.row()][larger.col()]) {
+                    minimumValue[larger.row()][larger.col()] = newLargerMinimum;
+                    changed = true;
+                }
+
+                if (newSmallerMaximum != maximumValue[smaller.row()][smaller.col()]) {
+                    maximumValue[smaller.row()][smaller.col()] = newSmallerMaximum;
+                    changed = true;
+                }
+            }
+        } while (changed && --maxIterations > 0);
+
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                if (minimumValue[row][col] > maximumValue[row][col]) {
+                    validInitialState = false;
+                }
+            }
+        }
+    }
+
+    private Cell smallerCell(Constraint constraint) {
+        Position position = switch (constraint.operator()) {
+            case LESS_THAN -> constraint.from();
+            case GREATER_THAN -> constraint.to();
+        };
+        return new Cell(position.row() - 1, position.col() - 1);
+    }
+
+    private Cell largerCell(Constraint constraint) {
+        Position position = switch (constraint.operator()) {
+            case LESS_THAN -> constraint.to();
+            case GREATER_THAN -> constraint.from();
+        };
+        return new Cell(position.row() - 1, position.col() - 1);
+    }
+
+    private void initializeUsedValues() {
+        for (int row = 0; row < size; row++) {
+            for (int col = 0; col < size; col++) {
+                int value = grid[row][col];
+
+                if (value == 0) {
+                    continue;
+                }
+
+                if (value < 1 || value > size
+                        || rowUsed[row][value]
+                        || columnUsed[col][value]
+                        || value < minimumValue[row][col]
+                        || value > maximumValue[row][col]) {
+                    validInitialState = false;
+                    continue;
+                }
+
+                rowUsed[row][value] = true;
+                columnUsed[col][value] = true;
+            }
+        }
+    }
+
+    private void validateGivenConstraints() {
+        if (!validInitialState) {
+            return;
+        }
+
+        for (Constraint constraint : constraints) {
+            int fromValue = valueAt(constraint.from());
+            int toValue = valueAt(constraint.to());
+
+            if (fromValue != 0 && toValue != 0 && !compare(fromValue, toValue, constraint)) {
+                validInitialState = false;
+                return;
+            }
+        }
     }
 
     private int valueAt(Position position) {
-        return valueAt(position.row(), position.col());
-    }
-
-    private int valueAt(int row, int col) {
-        return grid[row - 1][col - 1];
-    }
-
-    private void setValue(Position position, int value) {
-        grid[position.row() - 1][position.col() - 1] = value;
+        return grid[position.row() - 1][position.col() - 1];
     }
 
     private int[][] copy(int[][] source) {
-        int[][] copy = new int[source.length][];
+        int[][] result = new int[source.length][];
 
         for (int i = 0; i < source.length; i++) {
-            copy[i] = source[i].clone();
+            result[i] = source[i].clone();
         }
 
-        return copy;
+        return result;
     }
 
-    private record PositionWithCandidateCount(Position position, int candidateCount) {}
+    private record CellChoice(int row, int col, int candidateCount) {}
+
+    private record Cell(int row, int col) {}
 }
