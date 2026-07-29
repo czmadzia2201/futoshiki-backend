@@ -22,7 +22,7 @@ class BoardJsonExporter {
 
     public static void main(String[] args) throws Exception {
         for (int size = 4; size <= 9; size++) {
-            for (int fileNo = 6; fileNo <= 15; fileNo++) {
+            for (int fileNo = 1; fileNo <= 15; fileNo++) {
                 generateFile(size, Difficulty.EASY, fileNo);
                 generateFile(size, Difficulty.MEDIUM, fileNo);
                 generateFile(size, Difficulty.HARD, fileNo);
