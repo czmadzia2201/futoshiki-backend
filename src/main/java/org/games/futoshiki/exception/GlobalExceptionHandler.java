@@ -24,13 +24,8 @@ public class GlobalExceptionHandler {
         return ex.getMessage();
     }
 
-    @ExceptionHandler({UnsupportedOperationException.class})
-    @ResponseStatus(HttpStatus.NOT_IMPLEMENTED)
-    public String handleNotImplemented(RuntimeException ex) {
-        return ex.getMessage();
-    }
-
-    @ExceptionHandler({BoardLoadingException.class})
+    @ExceptionHandler({ BoardLoadingException.class,
+                        BoardValidationException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleInternalServerError(RuntimeException ex) {
         return ex.getMessage();

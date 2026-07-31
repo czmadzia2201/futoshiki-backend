@@ -20,7 +20,7 @@ class GeneratedFutoshikiBoardProviderTest {
 
     @ParameterizedTest
     @MethodSource("boardDimensions")
-    void shouldGenerateBoardOfCorrectSize(int size, Difficulty difficulty) {
+    void shouldprovideBoardOfCorrectSize(int size, Difficulty difficulty) {
         FutoshikiBoard board = provider.getBoard(size, difficulty);
         assertThat(board).isNotNull();
         assertThat(board.puzzleId()).isNull();

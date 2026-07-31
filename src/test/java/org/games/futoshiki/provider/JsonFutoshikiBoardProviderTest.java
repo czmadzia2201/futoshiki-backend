@@ -21,7 +21,7 @@ class JsonFutoshikiBoardProviderTest {
 
     @ParameterizedTest
     @MethodSource("boardDimensions")
-    void shouldGenerateBoardOfCorrectSize(int size, Difficulty difficulty, String prefix) {
+    void shouldprovideBoardOfCorrectSize(int size, Difficulty difficulty, String prefix) {
         FutoshikiBoard board = provider.getBoard(size, difficulty);
         assertThat(board).isNotNull();
         assertThat(board.puzzleId()).startsWith(prefix);

@@ -22,6 +22,10 @@ public class TestUtils {
     }
 
     private static URL loadFromJson(String fileName) {
-        return TestUtils.class.getClassLoader().getResource(fileName);
+        URL resource = TestUtils.class.getClassLoader().getResource(fileName);
+        if (resource == null) {
+            throw new IllegalArgumentException("Test resource not found: " + fileName);
+        }
+        return resource;
     }
 }
