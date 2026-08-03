@@ -2,7 +2,8 @@ package org.games.futoshiki.provider;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.games.futoshiki.client.OpenAiClient;
+import org.games.futoshiki.client.openai.OpenAiClient;
+import org.games.futoshiki.exception.BoardLoadingException;
 import org.games.futoshiki.exception.BoardValidationException;
 import org.games.futoshiki.model.Difficulty;
 import org.games.futoshiki.model.FutoshikiBoard;
@@ -19,14 +20,14 @@ public class AiFutoshikiBoardProvider implements FutoshikiBoardProvider {
 
     @Override
     public FutoshikiBoard getBoard(int size, Difficulty difficulty) {
-        FutoshikiBoard board = openAiClient.sendGenerateRequest(size, difficulty);
         try {
+            FutoshikiBoard board = openAiClient.sendBoardRequest(size, difficulty);
             validator.validate(board, size);
-        } catch (BoardValidationException e) {
-            log.error("AI generated an invalid board", e);
-            throw new BoardValidationException("AI generated an invalid board");
+            return board;
+        } catch (IllegalStateException | BoardValidationException e) {
+            log.error("Cannot get board from OpenAI", e);
+            throw new BoardLoadingException("Cannot get board from OpenAI");
         }
-        return board;
     }
 
 }

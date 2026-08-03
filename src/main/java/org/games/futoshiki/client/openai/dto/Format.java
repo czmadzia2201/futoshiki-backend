@@ -1,4 +1,4 @@
-package org.games.futoshiki.client.dto;
+package org.games.futoshiki.client.openai.dto;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

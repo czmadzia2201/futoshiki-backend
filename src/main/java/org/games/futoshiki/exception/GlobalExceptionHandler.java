@@ -11,21 +11,19 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({ InvalidSolutionException.class,
                         ConstraintViolationException.class,
-                        IllegalArgumentException.class
-    })
+                        IllegalArgumentException.class })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public String handleBadRequest(RuntimeException ex) {
         return ex.getMessage();
     }
 
-    @ExceptionHandler({GameNotFoundException.class})
+    @ExceptionHandler({ GameNotFoundException.class })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public String handleNotFound(RuntimeException ex) {
         return ex.getMessage();
     }
 
-    @ExceptionHandler({ BoardLoadingException.class,
-                        BoardValidationException.class})
+    @ExceptionHandler({ BoardLoadingException.class })
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleInternalServerError(RuntimeException ex) {
         return ex.getMessage();

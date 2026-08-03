@@ -1,4 +1,4 @@
-package org.games.futoshiki.client;
+package org.games.futoshiki.client.openai;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.github.victools.jsonschema.generator.*;

@@ -1,10 +1,10 @@
-package org.games.futoshiki.client;
+package org.games.futoshiki.client.openai;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import okhttp3.mockwebserver.MockResponse;
 import okhttp3.mockwebserver.MockWebServer;
 import okhttp3.mockwebserver.RecordedRequest;
-import org.games.futoshiki.client.dto.*;
+import org.games.futoshiki.client.openai.dto.*;
 import org.games.futoshiki.model.Difficulty;
 import org.games.futoshiki.model.FutoshikiBoard;
 import org.games.futoshiki.util.TestUtils;
@@ -62,7 +62,7 @@ class OpenAiClientTest {
                 .addHeader("Content-Type", "application/json")
                 .setBody(objectMapper.writeValueAsString(expectedBody)));
 
-        FutoshikiBoard responseBoard = openAiClient.sendGenerateRequest(4, Difficulty.EASY);
+        FutoshikiBoard responseBoard = openAiClient.sendBoardRequest(4, Difficulty.EASY);
         assertThat(responseBoard).usingRecursiveComparison().isEqualTo(expectedBoard);
 
         RecordedRequest recordedRequest = server.takeRequest();
@@ -96,17 +96,9 @@ class OpenAiClientTest {
     @Test
     void shouldThrowWhenServerReturnsError() {
         server.enqueue(new MockResponse()
-                .setResponseCode(500)
-                .addHeader("Content-Type", "application/json")
-                .setBody("""
-                        {
-                          "error": {
-                            "message": "Internal server error"
-                          }
-                        }
-                        """));
+                .setResponseCode(500));
 
-        assertThatThrownBy(() -> openAiClient.sendGenerateRequest(4, Difficulty.EASY))
+        assertThatThrownBy(() -> openAiClient.sendBoardRequest(4, Difficulty.EASY))
                 .isInstanceOfSatisfying(RestClientResponseException.class,
                         exception -> assertThat(exception.getStatusCode().value())
                                 .isEqualTo(500));
@@ -120,7 +112,7 @@ class OpenAiClientTest {
                 .setBody("not-json")
         );
 
-        assertThatThrownBy(() -> openAiClient.sendGenerateRequest(4, Difficulty.EASY))
+        assertThatThrownBy(() -> openAiClient.sendBoardRequest(4, Difficulty.EASY))
                 .isInstanceOf(RestClientException.class);
     }
 
@@ -132,7 +124,7 @@ class OpenAiClientTest {
                 .addHeader("Content-Type", "application/json")
                 .setBody(objectMapper.writeValueAsString(invalidBody)));
 
-        assertThatThrownBy(() -> openAiClient.sendGenerateRequest(4, Difficulty.EASY))
+        assertThatThrownBy(() -> openAiClient.sendBoardRequest(4, Difficulty.EASY))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("Cannot parse OpenAI response");
     }
@@ -148,7 +140,7 @@ class OpenAiClientTest {
                 .addHeader("Content-Type", "application/json")
                 .setBody(objectMapper.writeValueAsString(invalidBody)));
 
-        assertThatThrownBy(() -> openAiClient.sendGenerateRequest(4, Difficulty.EASY))
+        assertThatThrownBy(() -> openAiClient.sendBoardRequest(4, Difficulty.EASY))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("OpenAI returned no output text");
     }

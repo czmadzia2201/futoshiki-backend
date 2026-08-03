@@ -1,4 +1,4 @@
-package org.games.futoshiki.client;
+package org.games.futoshiki.client.openai;
 
 import org.games.futoshiki.model.Difficulty;
 import org.springframework.stereotype.Component;

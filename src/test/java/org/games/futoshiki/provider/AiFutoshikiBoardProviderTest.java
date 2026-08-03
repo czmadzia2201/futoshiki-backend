@@ -1,8 +1,8 @@
 package org.games.futoshiki.provider;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.games.futoshiki.client.OpenAiClient;
-import org.games.futoshiki.exception.BoardValidationException;
+import org.games.futoshiki.client.openai.OpenAiClient;
+import org.games.futoshiki.exception.BoardLoadingException;
 import org.games.futoshiki.model.Difficulty;
 import org.games.futoshiki.model.FutoshikiBoard;
 import org.games.futoshiki.provider.validator.FutoshikiBoardValidator;
@@ -38,18 +38,26 @@ class AiFutoshikiBoardProviderTest {
     @Test
     void shouldProvideBoardCorrectly() throws Exception {
         FutoshikiBoard board = TestUtils.loadBoardFromJson(objectMapper, "test-board-h4_001.json");
-        when(openAiClient.sendGenerateRequest(4, Difficulty.HARD)).thenReturn(board);
+        when(openAiClient.sendBoardRequest(4, Difficulty.HARD)).thenReturn(board);
         FutoshikiBoard result = provider.getBoard(4, Difficulty.HARD);
         assertThat(result).usingRecursiveComparison().isEqualTo(board);
     }
 
     @Test
+    void shouldThrowWhenBoardParsingFails() {
+        when(openAiClient.sendBoardRequest(4, Difficulty.HARD)).thenThrow(new IllegalStateException("Parsing error"));
+        assertThatThrownBy(() -> provider.getBoard(4, Difficulty.HARD))
+                .isInstanceOf(BoardLoadingException.class)
+                .hasMessageContaining("Cannot get board from OpenAI");
+    }
+
+    @Test
     void shouldThrowWhenBoardValidationFails() throws Exception {
         FutoshikiBoard board = TestUtils.loadBoardFromJson(objectMapper, "invalid-board_grid-inconsistent-with-solution.json");
-        when(openAiClient.sendGenerateRequest(4, Difficulty.HARD)).thenReturn(board);
+        when(openAiClient.sendBoardRequest(4, Difficulty.HARD)).thenReturn(board);
         assertThatThrownBy(() -> provider.getBoard(4, Difficulty.HARD))
-                .isInstanceOf(BoardValidationException.class)
-                .hasMessageContaining("AI generated an invalid board");
+                .isInstanceOf(BoardLoadingException.class)
+                .hasMessageContaining("Cannot get board from OpenAI");
     }
 
 }

@@ -1,9 +1,9 @@
-package org.games.futoshiki.client;
+package org.games.futoshiki.client.openai;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.games.futoshiki.client.dto.*;
+import org.games.futoshiki.client.openai.dto.*;
 import org.games.futoshiki.model.Difficulty;
 import org.games.futoshiki.model.FutoshikiBoard;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,7 +38,7 @@ public class OpenAiClient {
         this.openAiUri = openAiUri;
     }
 
-    public FutoshikiBoard sendGenerateRequest(int size, Difficulty difficulty) {
+    public FutoshikiBoard sendBoardRequest(int size, Difficulty difficulty) {
 
         JsonNode futoshikiBoard = jsonSchemaService.generate(FutoshikiBoard.class);
         Text text = new Text(new Format(futoshikiBoard));
