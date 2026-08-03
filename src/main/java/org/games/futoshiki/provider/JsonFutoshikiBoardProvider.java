@@ -44,7 +44,7 @@ public class JsonFutoshikiBoardProvider implements FutoshikiBoardProvider {
                 log.warn("Failed to load puzzle file on attempt {}.", attempt, e);
             }
         }
-        throw new BoardLoadingException("Unable to load puzzle after " + MAX_ATTEMPTS + " attempts.");
+        throw new BoardLoadingException("Cannot load board from file");
     }
 
     private int providePuzzleNumber(String mapKey) {

@@ -73,11 +73,13 @@ class FutoshikiControllerTest {
     @Test
     void newGame_shouldReturnInternalServerError_boardCannotBeLoaded() throws Exception {
         when(futoshikiService.newGame(4, Difficulty.EASY, ProviderStrategy.FILE))
-                .thenThrow(new BoardLoadingException("Unable to load puzzle after 5 attempts."));
+                .thenThrow(new BoardLoadingException("Cannot load board from file"));
 
         mockMvc.perform(post("/futoshiki/new-game/4/easy?strategy=file"))
                 .andExpect(status().isInternalServerError())
-                .andExpect(content().string("Unable to load puzzle after 5 attempts."));
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.message")
+                        .value("Cannot load board from file"));
     }
 
     @Test

@@ -45,7 +45,7 @@ class JsonFutoshikiBoardProviderTest {
     void shouldThrowWhenPuzzleFileCannotBeLoaded() {
         assertThatThrownBy(() -> provider.getBoard(3, Difficulty.EASY))
                 .isInstanceOf(BoardLoadingException.class)
-                .hasMessage("Unable to load puzzle after 5 attempts.");
+                .hasMessage("Cannot load board from file");
     }
 
     @Test

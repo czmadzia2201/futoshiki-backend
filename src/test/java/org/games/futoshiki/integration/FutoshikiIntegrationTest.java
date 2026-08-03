@@ -1,10 +1,7 @@
 package org.games.futoshiki.integration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.games.futoshiki.dto.ActiveGameDto;
-import org.games.futoshiki.dto.SolutionDto;
-import org.games.futoshiki.dto.SolutionValidationDto;
-import org.games.futoshiki.dto.FutoshikiBoardDto;
+import org.games.futoshiki.dto.*;
 import org.games.futoshiki.model.ActiveGame;
 import org.games.futoshiki.model.Difficulty;
 import org.games.futoshiki.model.FutoshikiBoard;
@@ -99,13 +96,13 @@ public class FutoshikiIntegrationTest {
         UUID gameId = UUID.randomUUID();
 
         // WHEN
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                "/futoshiki/" + gameId + "/check-solution", request, String.class);
+        ResponseEntity<ErrorResponseDto> response = restTemplate.postForEntity(
+                "/futoshiki/" + gameId + "/check-solution", request, ErrorResponseDto.class);
 
         // THEN
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
-        String message = response.getBody();
-        assertThat(message).isEqualTo("Game not found: " + gameId);
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().message()).isEqualTo("Game not found: " + gameId);
     }
 
     @Test
@@ -117,13 +114,13 @@ public class FutoshikiIntegrationTest {
                 TestUtils.loadSolutionFromJson(objectMapper,"solution-wrongsize-h4_001.json");
 
         // WHEN
-        ResponseEntity<String> response = restTemplate.postForEntity(
-                "/futoshiki/" + activeGame.gameId() + "/check-solution", request, String.class);
+        ResponseEntity<ErrorResponseDto> response = restTemplate.postForEntity(
+                "/futoshiki/" + activeGame.gameId() + "/check-solution", request, ErrorResponseDto.class);
 
         // THEN
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        String message = response.getBody();
-        assertThat(message).isEqualTo("Solution must have size: 4 x 4");
+        assertThat(response.getBody()).isNotNull();
+        assertThat(response.getBody().message()).isEqualTo("Solution must have size: 4 x 4");
     }
 
     @Test
