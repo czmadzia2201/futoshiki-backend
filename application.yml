@@ -4,3 +4,7 @@ openai:
 
 fcapi:
     uri: https://www.futoshiki.com/get.cgi
+
+server:
+    servlet:
+        context-path: /futoshiki

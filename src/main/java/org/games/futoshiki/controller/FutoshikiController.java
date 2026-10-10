@@ -17,7 +17,7 @@ import java.util.UUID;
 
 @Validated
 @RestController
-@RequestMapping("/futoshiki")
+@RequestMapping("/")
 @RequiredArgsConstructor
 public class FutoshikiController {
 

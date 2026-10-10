@@ -33,7 +33,7 @@ public class FutoshikiIntegrationTest {
     @Test
     void shouldCreateNewGame_defaultProviderStrategy() {
         // WHEN
-        ResponseEntity<ActiveGameDto> response = restTemplate.postForEntity("/futoshiki/new-game/4/easy", null, ActiveGameDto.class);
+        ResponseEntity<ActiveGameDto> response = restTemplate.postForEntity("/new-game/4/easy", null, ActiveGameDto.class);
 
         // THEN
         assertCorrectFlow(response, 4, Difficulty.EASY);
@@ -44,7 +44,7 @@ public class FutoshikiIntegrationTest {
     @Test
     void shouldCreateNewGame_fileProviderStrategy() {
         // WHEN
-        ResponseEntity<ActiveGameDto> response = restTemplate.postForEntity("/futoshiki/new-game/4/easy?strategy=file", null, ActiveGameDto.class);
+        ResponseEntity<ActiveGameDto> response = restTemplate.postForEntity("/new-game/4/easy?strategy=file", null, ActiveGameDto.class);
 
         // THEN
         assertCorrectFlow(response, 4, Difficulty.EASY);
@@ -79,7 +79,7 @@ public class FutoshikiIntegrationTest {
 
         // WHEN
         ResponseEntity<SolutionValidationDto> response = restTemplate.postForEntity(
-                "/futoshiki/" + activeGame.gameId() + "/check-solution", request, SolutionValidationDto.class);
+                "/" + activeGame.gameId() + "/check-solution", request, SolutionValidationDto.class);
 
         // THEN
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
@@ -97,7 +97,7 @@ public class FutoshikiIntegrationTest {
 
         // WHEN
         ResponseEntity<ErrorResponseDto> response = restTemplate.postForEntity(
-                "/futoshiki/" + gameId + "/check-solution", request, ErrorResponseDto.class);
+                "/" + gameId + "/check-solution", request, ErrorResponseDto.class);
 
         // THEN
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
@@ -115,7 +115,7 @@ public class FutoshikiIntegrationTest {
 
         // WHEN
         ResponseEntity<ErrorResponseDto> response = restTemplate.postForEntity(
-                "/futoshiki/" + activeGame.gameId() + "/check-solution", request, ErrorResponseDto.class);
+                "/" + activeGame.gameId() + "/check-solution", request, ErrorResponseDto.class);
 
         // THEN
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
@@ -133,7 +133,7 @@ public class FutoshikiIntegrationTest {
 
         // WHEN
         ResponseEntity<SolutionDto> response = restTemplate.getForEntity(
-                "/futoshiki/" + activeGame.gameId() + "/show-solution", SolutionDto.class);
+                "/" + activeGame.gameId() + "/show-solution", SolutionDto.class);
 
         // THEN
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);

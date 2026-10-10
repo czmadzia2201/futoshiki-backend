@@ -98,6 +98,10 @@ npm install
 npm start
 ```
 
+### Swagger
+http://localhost:8080/shape-puzzles/swagger-ui/index.html
+
+
 ### OpenAI configuration
 
 To enable the **OpenAI** provider, configure your API key in the backend application configuration before starting the project.

@@ -52,7 +52,7 @@ class FutoshikiControllerTest {
 
         when(futoshikiService.newGame(4, Difficulty.EASY, ProviderStrategy.GENERATOR)).thenReturn(gameDto);
 
-        mockMvc.perform(post("/futoshiki/new-game/4/easy"))
+        mockMvc.perform(post("/new-game/4/easy"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.gameId").value(gameId.toString()));
     }
@@ -65,7 +65,7 @@ class FutoshikiControllerTest {
 
         when(futoshikiService.newGame(4, Difficulty.EASY, ProviderStrategy.FILE)).thenReturn(gameDto);
 
-        mockMvc.perform(post("/futoshiki/new-game/4/easy?strategy=file"))
+        mockMvc.perform(post("/new-game/4/easy?strategy=file"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.gameId").value(gameId.toString()));
     }
@@ -75,7 +75,7 @@ class FutoshikiControllerTest {
         when(futoshikiService.newGame(4, Difficulty.EASY, ProviderStrategy.FILE))
                 .thenThrow(new BoardLoadingException("Cannot load board from file"));
 
-        mockMvc.perform(post("/futoshiki/new-game/4/easy?strategy=file"))
+        mockMvc.perform(post("/new-game/4/easy?strategy=file"))
                 .andExpect(status().isInternalServerError())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.message")
@@ -84,7 +84,7 @@ class FutoshikiControllerTest {
 
     @Test
     void newGame_shouldReturnBadRequest_sizeNotInRange() throws Exception {
-        mockMvc.perform(post("/futoshiki/new-game/3/easy?strategy=file"))
+        mockMvc.perform(post("/new-game/3/easy?strategy=file"))
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(futoshikiService);
@@ -92,7 +92,7 @@ class FutoshikiControllerTest {
 
     @Test
     void newGame_shouldReturnBadRequest_difficultyNotValid() throws Exception {
-        mockMvc.perform(post("/futoshiki/new-game/4/extreme?strategy=file"))
+        mockMvc.perform(post("/new-game/4/extreme?strategy=file"))
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(futoshikiService);
@@ -100,7 +100,7 @@ class FutoshikiControllerTest {
 
     @Test
     void newGame_shouldReturnBadRequest_providerNotValid() throws Exception {
-        mockMvc.perform(post("/futoshiki/new-game/4/medium?strategy=random"))
+        mockMvc.perform(post("/new-game/4/medium?strategy=random"))
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(futoshikiService);
@@ -114,7 +114,7 @@ class FutoshikiControllerTest {
         when(futoshikiService.checkSolution(
                 eq(gameId), argThat(actual -> Arrays.deepEquals(actual, solution)))).thenReturn(true);
 
-        mockMvc.perform(post("/futoshiki/{id}/check-solution", gameId)
+        mockMvc.perform(post("/{id}/check-solution", gameId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
@@ -129,7 +129,7 @@ class FutoshikiControllerTest {
         when(futoshikiService.checkSolution(eq(gameId), argThat(actual -> Arrays.deepEquals(actual, solution))))
                 .thenThrow(new InvalidSolutionException("Invalid solution size"));
 
-        mockMvc.perform(post("/futoshiki/{id}/check-solution", gameId)
+        mockMvc.perform(post("/{id}/check-solution", gameId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -143,7 +143,7 @@ class FutoshikiControllerTest {
         when(futoshikiService.checkSolution(eq(gameId), argThat(actual -> Arrays.deepEquals(actual, solution))))
                 .thenThrow(new GameNotFoundException(gameId));
 
-        mockMvc.perform(post("/futoshiki/{id}/check-solution", gameId)
+        mockMvc.perform(post("/{id}/check-solution", gameId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isNotFound());
@@ -151,7 +151,7 @@ class FutoshikiControllerTest {
 
     @Test
     void checkSolution_shouldReturnBadRequest_invalidRequestBody() throws Exception {
-        mockMvc.perform(post("/futoshiki/{id}/check-solution", UUID.randomUUID())
+        mockMvc.perform(post("/{id}/check-solution", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("""
                             {"solution": [["abc"]]}
@@ -163,7 +163,7 @@ class FutoshikiControllerTest {
 
     @Test
     void checkSolution_shouldReturnBadRequest_nullBody() throws Exception {
-        mockMvc.perform(post("/futoshiki/{id}/check-solution", UUID.randomUUID()))
+        mockMvc.perform(post("/{id}/check-solution", UUID.randomUUID()))
                 .andExpect(status().isBadRequest());
 
         verifyNoInteractions(futoshikiService);
@@ -173,7 +173,7 @@ class FutoshikiControllerTest {
     void checkSolution_shouldReturnBadRequest_nullSolution() throws Exception {
         SolutionDto request = new SolutionDto(null);
 
-        mockMvc.perform(post("/futoshiki/{id}/check-solution", UUID.randomUUID())
+        mockMvc.perform(post("/{id}/check-solution", UUID.randomUUID())
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isBadRequest());
@@ -188,7 +188,7 @@ class FutoshikiControllerTest {
         UUID gameId = UUID.randomUUID();
         when(futoshikiService.showSolution(gameId)).thenReturn(response);
 
-        mockMvc.perform(get("/futoshiki/{id}/show-solution", gameId))
+        mockMvc.perform(get("/{id}/show-solution", gameId))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.solution").isNotEmpty());
     }
