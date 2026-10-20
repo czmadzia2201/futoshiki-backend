@@ -99,7 +99,7 @@ npm start
 ```
 
 ### Swagger
-http://localhost:8080/futoshiki/swagger-ui/index.html
+http://localhost:8080/futoshiki/api/swagger-ui/index.html
 
 ### OpenAI configuration
 
