@@ -11,6 +11,7 @@ import org.games.futoshiki.provider.FutoshikiBoardProvider;
 import org.games.futoshiki.provider.FutoshikiBoardProviderFactory;
 import org.games.futoshiki.provider.ProviderStrategy;
 import org.games.futoshiki.repository.ActiveGameStore;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -21,12 +22,16 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class FutoshikiService {
 
+    @Value("${restrictions.board-sources:false}")
+    private boolean restrictBoardSources;
+
     private final ActiveGameStore activeGameStore;
 
     private final FutoshikiBoardProviderFactory providerFactory;
 
     public ActiveGameDto newGame(int size, Difficulty difficulty, ProviderStrategy strategy) {
         validateSize(size);
+        validateStrategy(strategy);
         FutoshikiBoardProvider provider = providerFactory.getProvider(strategy);
         FutoshikiBoard board = provider.getBoard(size, difficulty);
         ActiveGame activeGame = activeGameStore.createNewGame(board);
@@ -50,6 +55,14 @@ public class FutoshikiService {
             throw new IllegalArgumentException(
                     "Board size must be between 4 and 9"
             );
+        }
+    }
+
+    private void validateStrategy(ProviderStrategy strategy) {
+        if (restrictBoardSources
+                && strategy != ProviderStrategy.GENERATOR
+                && strategy != ProviderStrategy.FUTOSHIKI_COM_API) {
+            throw new IllegalArgumentException("Board source not available");
         }
     }
 
